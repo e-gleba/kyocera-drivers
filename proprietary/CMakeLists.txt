@@ -1,15 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Ensure all required files exist before install
-foreach(_file wrapper.sh rastertokpsl-x32 rastertokpsl-x64)
-    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/${_file}")
-        message(
-            FATAL_ERROR
-            "Required file '${_file}' not found in ${CMAKE_CURRENT_LIST_DIR}"
-        )
-    endif()
-endforeach()
-
 cpack_add_component(
     proprietary_runtime
     DISPLAY_NAME "Proprietary Runtime"

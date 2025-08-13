@@ -27,6 +27,8 @@ find_package(cpplint CONFIG REQUIRED)
 
 if(DOWNLOAD_PPDS)
     find_package(kyocera_ppd CONFIG REQUIRED)
+else()
+    add_subdirectory(ppd)
 endif()
 
 if(INSTALL_ORIGINAL_PROPRIETARY_DRIVERS)
