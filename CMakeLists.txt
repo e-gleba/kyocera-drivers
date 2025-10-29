@@ -8,13 +8,13 @@ project(
     LANGUAGES C CXX
 )
 
-option(BUILD_TESTS "Enable building of test suite" ON)
+option(BUILD_TESTS "Enable building of test suite" OFF)
 option(
     INSTALL_ORIGINAL_PROPRIETARY_DRIVERS
     "Install official proprietary Kyocera drivers"
-    OFF
+    ON
 )
-option(DOWNLOAD_PPDS "Download and install Kyocera PPD files" OFF)
+option(DOWNLOAD_PPDS "Download and install Kyocera PPD files" ON)
 
 list(APPEND CMAKE_PREFIX_PATH cmake)
 
