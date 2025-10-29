@@ -2,17 +2,20 @@
 
 ## Overview
 
-This repository delivers a fully open, reverse-engineered Kyocera PPD and filter solution for Linux printing environments. It includes:
+This repository delivers a reverse-engineered Kyocera filter solution for Linux printing environments. It includes:
 
-- Modern C++20/C17 source for `rastertokpsl` (Kyocera raster filter)
+- C++23/C23 entry for reconstructed `rastertokpsl` (Kyocera raster filter)
 - Automated CMake build and install system
-- PPD files, filter binaries, and installation scripts
-- Reverse engineering resources (Ghidra projects, reconstructed code)
+- ppd files, filter binaries, and installation scripts in cmake
 
 **Supported:**
 
 - x86_64 Linux
 - CUPS print servers (requires `libcups`/`cups-devel`)
+
+**limitations**
+
+possible problems with page type changes (vertical/horizontal), so for full support use proprietary driver with flags order fix. Current driver messes the argument order passed to filter, so setting option to install proprietary drivers will install a fixed version.
 
 ## Supported Models
 
@@ -27,28 +30,18 @@ This driver package provides PPDs and filter support for the following Kyocera p
 
 **Tested:**
 
-- Fully tested and verified with Kyocera FS-1020MFP.
-
----
-
-## Features
-
-- **Modern CMake**: Out-of-the-box build, install, and test via CMake presets
-- **Multi-language PPDs**: User-selectable driver language
-- **Automated Install/Uninstall**: Clean system integration and removal
-- **Reverse Engineering Resources**: Ghidra projects and annotated C/C++ sources
-
----
+- Kyocera FS-1020MFP.
 
 ## Quick Start
 
 ### Prerequisites
 
 - Fedora, Ubuntu, or any modern Linux with CUPS
-- `cmake` (≥3.16 recommended)
-- `make` or Ninja
-- `g++` (C++20) and `gcc` (C17)
-- CUPS development headers:  
+- `cmake` (≥3.25 recommended)
+- ninja generator
+- `g++` (C++23) and `gcc` (C23) / `clang++` and `clang`
+- `libstdc++` and `libstdc++-devel`
+- CUPS dev headers: 
   Fedora: `sudo dnf install cups-devel`  
   Ubuntu: `sudo apt install libcups2-dev`
 
@@ -56,28 +49,24 @@ This driver package provides PPDs and filter support for the following Kyocera p
 
 ```sh
 # 1. Clone the repo
-git clone https://github.com/geugenm/kyocera-drivers.git
+git clone https://github.com/e-gleba/kyocera-drivers.git
 cd kyocera-drivers
 
-# 2. Create a build directory
-mkdir build && cd build
+# 2. Configure
+cmake --preset gcc
+# or
+cmake --preset clang
 
-# 3. Configure the project (release build, custom install prefix optional)
-cmake .. -DCMAKE_BUILD_TYPE=Release
+# 3. Build
+cmake --build --preset gcc
+# or
+cmake --build --preset clang
 
 # 4. Build everything
 cmake --build . --parallel
 
 # 5. Install (requires root for system-wide)
 sudo cmake --install build/release --prefix=/usr
-```
-
-#### Custom Install Location
-
-```sh
-cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/.local
-cmake --build . --parallel
-cmake --install .
 ```
 
 ### Components
@@ -111,8 +100,6 @@ sudo cmake --build . --target uninstall
 
 _(If not present, see [CMake uninstall recipe] for adding this target.)_
 
----
-
 ## Usage
 
 After installation, CUPS will recognize the new Kyocera PPDs and filters.  
@@ -135,28 +122,9 @@ See `--help` for argument details.
 - Use `cmake --build . --verbose` for detailed build logs.
 - For filter debugging, check `/var/log/cups/error_log`.
 
----
-
-## Reverse Engineering Resources
-
-- **Ghidra Project Files**:  
-  Deep-dive into Kyocera’s original binary with SRE tooling.
-- **Reconstructed Sources**:  
-  C/C++ code derived from reverse engineering, annotated for clarity.
-
-**Use cases:**
-
-- Custom print workflow development
-- Security research and vulnerability analysis
-- Educational insight into Kyocera’s print pipeline
-
----
-
 ## License
 
 This project is licensed under the GNU GENERAL PUBLIC LICENSE v2. See [LICENSE](LICENSE).
-
----
 
 ## References
 
@@ -164,5 +132,3 @@ This project is licensed under the GNU GENERAL PUBLIC LICENSE v2. See [LICENSE](
 - [CUPS Filter Integration](https://en.opensuse.org/SDB:Using_Your_Own_Filters_to_Print_with_CUPS)
 - [Ghidra Reverse Engineering](https://ghidra-sre.org/)
 - [Original Repo](https://github.com/sv99/rastertokpsl-re?tab=readme-ov-file)
-
----
