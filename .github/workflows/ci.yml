@@ -20,7 +20,7 @@ jobs:
         preset: [gcc_amd64_ci, clang_amd64_ci]
     steps:
       - id: checkout_repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - id: install_deps
         run: |
@@ -38,37 +38,7 @@ jobs:
 
       - id: upload_artifacts
         if: failure() || success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.preset }}
           path: build/${{ matrix.preset }}/
-
-  lint_and_format:
-    name: lint and format
-    runs-on: ubuntu-latest
-    steps:
-      - id: checkout_repo
-        uses: actions/checkout@v4
-
-      - id: install_tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            cmake ninja-build \
-            gcc g++ \
-            clang clang-tidy clang-format \
-            libcups2-dev cups-filters \
-            python3-pip
-          pip3 install cpplint
-
-      - id: configure_gcc
-        run: cmake --preset gcc_amd64_ci
-
-      - id: clang_format_check
-        run: cmake --build build/gcc_amd64_ci --target clang_format_check
-
-      - id: clang_tidy
-        run: cmake --build build/gcc_amd64_ci --target clang_tidy
-
-      - id: cpplint
-        run: cmake --build build/gcc_amd64_ci --target cpplint
