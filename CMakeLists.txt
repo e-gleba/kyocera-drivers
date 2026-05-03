@@ -5,7 +5,7 @@ project(
     VERSION 1.1.0
     DESCRIPTION "High-performance Kyocera raster-to-KPSL conversion toolkit"
     HOMEPAGE_URL "https://github.com/e-gleba/kyocera-drivers"
-    LANGUAGES C CXX
+    LANGUAGES NONE
 )
 
 include(GNUInstallDirs)
