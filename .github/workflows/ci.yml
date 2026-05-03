@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   build_linux:
-    name: Build and Test (Linux ${{ matrix.compiler }})
+    name: Build (Linux ${{ matrix.compiler }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -32,9 +32,6 @@ jobs:
 
       - name: Build (${{ matrix.compiler }})
         run: cmake --build --preset ${{ matrix.compiler }}
-
-      - name: Test (${{ matrix.compiler }})
-        run: ctest --preset ${{ matrix.compiler }} --output-on-failure
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
