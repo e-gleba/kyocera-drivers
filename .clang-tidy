@@ -15,7 +15,6 @@ Checks: >-
   google-readability-todo,
   readability-identifier-naming
 
-HeaderFilter: ''
 HeaderFilterRegex: '^(?!.*(gtest|gmock)).*$'
 
 AnalyzeTemporaryDtors: true
@@ -30,14 +29,3 @@ SpacesBeforeTrailingComments: 1
 UseTab: Never
 
 WarningsAsErrors: '*'
-
-# Exclude specific files from linting
-ExcludePatterns:
-  - 'external/**/*'
-  - 'build/**/*'
-  - 'generated/**/*'
-  - 'third-party/**/*'
-  - 'vendor/**/*'
-  - 'tools/**/*'
-  - 'modules/**/*'
-  - 'cache/**/*'

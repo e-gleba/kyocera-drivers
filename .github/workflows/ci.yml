@@ -45,8 +45,8 @@ jobs:
           name: build_${{ matrix.compiler }}
           path: build/${{ matrix.compiler }}/
 
-  format_check:
-    name: Format and Lint
+  lint_and_format:
+    name: Lint and Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -55,16 +55,16 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-format clang-tidy cmake
+          sudo apt-get install -y clang-format clang-tidy cmake ninja-build libcups2-dev
 
-      - name: Run clang-format check
+      - name: Configure (GCC for compile_commands.json)
         run: |
-          find src -name '*.cxx' -o -name '*.c' -o -name '*.h' | \
-            xargs clang-format --dry-run --Werror
-        continue-on-error: true
+          cmake --preset gcc \
+                -DINSTALL_ORIGINAL_PROPRIETARY_DRIVERS=OFF \
+                -DBUILD_TESTS=ON
 
-      - name: Run clang-tidy check
-        run: |
-          cmake --preset gcc
-          cmake --build build/gcc --target clang-tidy-check
-        continue-on-error: true
+      - name: Check formatting
+        run: cmake --build build/gcc --target clang_format_check
+
+      - name: Run static analysis
+        run: cmake --build build/gcc --target clang_tidy
