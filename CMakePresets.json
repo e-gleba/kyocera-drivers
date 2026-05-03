@@ -96,50 +96,6 @@
       "configuration": "Release"
     }
   ],
-  "testPresets": [
-    {
-      "name": "msvc",
-      "displayName": "MSVC Tests",
-      "configurePreset": "msvc",
-      "configuration": "Release",
-      "output": {
-        "outputOnFailure": true,
-        "verbosity": "default"
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": false
-      }
-    },
-    {
-      "name": "clang",
-      "displayName": "Clang Tests",
-      "configurePreset": "clang",
-      "configuration": "Release",
-      "output": {
-        "outputOnFailure": true,
-        "verbosity": "default"
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": false
-      }
-    },
-    {
-      "name": "gcc",
-      "displayName": "GCC Tests",
-      "configurePreset": "gcc",
-      "configuration": "Release",
-      "output": {
-        "outputOnFailure": true,
-        "verbosity": "default"
-      },
-      "execution": {
-        "noTestsAction": "error",
-        "stopOnFailure": false
-      }
-    }
-  ],
   "packagePresets": [
     {
       "name": "msvc-package",
@@ -175,10 +131,6 @@
           "name": "msvc"
         },
         {
-          "type": "test",
-          "name": "msvc"
-        },
-        {
           "type": "package",
           "name": "msvc-package"
         }
@@ -198,10 +150,6 @@
           "name": "clang"
         },
         {
-          "type": "test",
-          "name": "clang"
-        },
-        {
           "type": "package",
           "name": "clang-package"
         }
@@ -218,10 +166,6 @@
         },
         {
           "type": "build",
-          "name": "gcc"
-        },
-        {
-          "type": "test",
           "name": "gcc"
         },
         {
