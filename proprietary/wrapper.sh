@@ -12,10 +12,10 @@ job_name=$(echo "$title" | grep -o '[[:alnum:]]' | tr -d '\n' | tail -c 20)
 arch=$(uname -m)
 case "$arch" in
 x86_64 | amd64)
-  bin="rastertokpsl-x64"
+  bin="rastertokpsl_amd64"
   ;;
 i386 | i486 | i586 | i686)
-  bin="rastertokpsl-x32"
+  bin="rastertokpsl_x86"
   ;;
 *)
   echo "[wrapper.sh] error: unsupported architecture '$arch'" >&2

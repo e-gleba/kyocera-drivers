@@ -4,8 +4,7 @@ cpack_add_component(
     proprietary_runtime
     DISPLAY_NAME "Proprietary Runtime"
     DESCRIPTION "Kyocera rastertokpsl wrapper and binaries"
-    REQUIRED
-)
+    REQUIRED)
 
 # Install wrapper.sh as rastertokpsl (runtime component)
 install(
@@ -20,14 +19,12 @@ install(
         GROUP_READ
         GROUP_EXECUTE
         WORLD_READ
-        WORLD_EXECUTE
-)
+        WORLD_EXECUTE)
 
 # Install rastertokpsl-x32 binary (runtime component)
 install(
-    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl-x32"
+    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl_x86"
     DESTINATION lib/cups/filter
-    RENAME rastertokpsl-x32
     COMPONENT proprietary_runtime
     PERMISSIONS
         OWNER_READ
@@ -36,14 +33,12 @@ install(
         GROUP_READ
         GROUP_EXECUTE
         WORLD_READ
-        WORLD_EXECUTE
-)
+        WORLD_EXECUTE)
 
 # Install rastertokpsl-x64 binary (runtime component)
 install(
-    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl-x64"
+    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl_amd64"
     DESTINATION lib/cups/filter
-    RENAME rastertokpsl-x64
     COMPONENT proprietary_runtime
     PERMISSIONS
         OWNER_READ
@@ -52,5 +47,4 @@ install(
         GROUP_READ
         GROUP_EXECUTE
         WORLD_READ
-        WORLD_EXECUTE
-)
+        WORLD_EXECUTE)
