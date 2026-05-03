@@ -5,19 +5,17 @@ project(
     VERSION 1.1.0
     DESCRIPTION "High-performance Kyocera raster-to-KPSL conversion toolkit"
     HOMEPAGE_URL "https://github.com/geugenm/kyocera-drivers"
-    LANGUAGES C CXX
-)
+    LANGUAGES C CXX)
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    message(FATAL_ERROR "This project supports Linux x86_64 only. Detected: ${CMAKE_SYSTEM_NAME}")
+if(NOT
+   CMAKE_SYSTEM_NAME
+   STREQUAL
+   "Linux")
+    message(
+        FATAL_ERROR
+            "This project supports Linux x86_64 only. Detected: ${CMAKE_SYSTEM_NAME}"
+        )
 endif()
-
-option(BUILD_TESTS "Enable building of test suite" ON)
-option(
-    INSTALL_ORIGINAL_PROPRIETARY_DRIVERS
-    "Install official proprietary Kyocera drivers"
-    ON
-)
 
 # NOTE: Kyocera has transitioned to a universal driver model and no longer
 # provides per-model manual PPD files through the legacy download endpoints.
@@ -30,26 +28,10 @@ list(APPEND CMAKE_PREFIX_PATH cmake)
 
 find_package(package CONFIG REQUIRED)
 
-find_package(clang_format CONFIG REQUIRED)
-find_package(clang_tidy CONFIG REQUIRED)
-find_package(clang_doc CONFIG REQUIRED)
-find_package(cpplint CONFIG REQUIRED)
-
 if(DOWNLOAD_PPDS)
     find_package(kyocera_ppd CONFIG REQUIRED)
 else()
-    add_subdirectory(ppd)
+    add_subdirectory(ppd SYSTEM)
 endif()
 
-if(INSTALL_ORIGINAL_PROPRIETARY_DRIVERS)
-    add_subdirectory(proprietary SYSTEM)
-else()
-    add_subdirectory(src)
-endif()
-
-# Integration tests require the open-source rastertokpsl target built from src/.
-# They are skipped automatically when the proprietary driver path is selected.
-if(BUILD_TESTS AND NOT INSTALL_ORIGINAL_PROPRIETARY_DRIVERS)
-    include(CTest)
-    add_subdirectory(tests)
-endif()
+add_subdirectory(proprietary SYSTEM)

@@ -17,9 +17,6 @@
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_COLOR_DIAGNOSTICS": "ON"
-      },
-      "environment": {
-        "NINJA_STATUS": "[%f/%t] "
       }
     },
     {
@@ -61,26 +58,6 @@
         "CC": "clang",
         "CXX": "clang++"
       }
-    },
-    {
-      "name": "gcc_amd64_ci",
-      "displayName": "GCC amd64 CI",
-      "description": "CI preset: open-source driver + tests enabled",
-      "inherits": "gcc_amd64",
-      "cacheVariables": {
-        "INSTALL_ORIGINAL_PROPRIETARY_DRIVERS": "OFF",
-        "BUILD_TESTS": "ON"
-      }
-    },
-    {
-      "name": "clang_amd64_ci",
-      "displayName": "Clang amd64 CI",
-      "description": "CI preset: open-source driver + tests enabled",
-      "inherits": "clang_amd64",
-      "cacheVariables": {
-        "INSTALL_ORIGINAL_PROPRIETARY_DRIVERS": "OFF",
-        "BUILD_TESTS": "ON"
-      }
     }
   ],
   "buildPresets": [
@@ -94,18 +71,6 @@
       "name": "clang_amd64",
       "displayName": "Clang amd64 Build",
       "configurePreset": "clang_amd64",
-      "configuration": "Release"
-    },
-    {
-      "name": "gcc_amd64_ci",
-      "displayName": "GCC amd64 CI Build",
-      "configurePreset": "gcc_amd64_ci",
-      "configuration": "Release"
-    },
-    {
-      "name": "clang_amd64_ci",
-      "displayName": "Clang amd64 CI Build",
-      "configurePreset": "clang_amd64_ci",
       "configuration": "Release"
     }
   ],
@@ -129,26 +94,6 @@
         "outputOnFailure": true,
         "verbosity": "default"
       }
-    },
-    {
-      "name": "gcc_amd64_ci",
-      "displayName": "GCC amd64 CI Tests",
-      "configurePreset": "gcc_amd64_ci",
-      "configuration": "Release",
-      "output": {
-        "outputOnFailure": true,
-        "verbosity": "default"
-      }
-    },
-    {
-      "name": "clang_amd64_ci",
-      "displayName": "Clang amd64 CI Tests",
-      "configurePreset": "clang_amd64_ci",
-      "configuration": "Release",
-      "output": {
-        "outputOnFailure": true,
-        "verbosity": "default"
-      }
     }
   ],
   "packagePresets": [
@@ -156,13 +101,19 @@
       "name": "gcc_amd64_package",
       "displayName": "GCC amd64 Package",
       "configurePreset": "gcc_amd64",
-      "generators": ["TGZ", "RPM"]
+      "generators": [
+        "TGZ",
+        "RPM"
+      ]
     },
     {
       "name": "clang_amd64_package",
       "displayName": "Clang amd64 Package",
       "configurePreset": "clang_amd64",
-      "generators": ["TGZ", "DEB"]
+      "generators": [
+        "TGZ",
+        "DEB"
+      ]
     }
   ],
   "workflowPresets": [
@@ -171,10 +122,22 @@
       "displayName": "GCC amd64 Complete Pipeline",
       "description": "Full configure → build → test → package workflow for GCC on Linux x86_64",
       "steps": [
-        { "type": "configure", "name": "gcc_amd64" },
-        { "type": "build", "name": "gcc_amd64" },
-        { "type": "test", "name": "gcc_amd64" },
-        { "type": "package", "name": "gcc_amd64_package" }
+        {
+          "type": "configure",
+          "name": "gcc_amd64"
+        },
+        {
+          "type": "build",
+          "name": "gcc_amd64"
+        },
+        {
+          "type": "test",
+          "name": "gcc_amd64"
+        },
+        {
+          "type": "package",
+          "name": "gcc_amd64_package"
+        }
       ]
     },
     {
@@ -182,30 +145,22 @@
       "displayName": "Clang amd64 Complete Pipeline",
       "description": "Full configure → build → test → package workflow for Clang on Linux x86_64",
       "steps": [
-        { "type": "configure", "name": "clang_amd64" },
-        { "type": "build", "name": "clang_amd64" },
-        { "type": "test", "name": "clang_amd64" },
-        { "type": "package", "name": "clang_amd64_package" }
-      ]
-    },
-    {
-      "name": "gcc_amd64_ci",
-      "displayName": "GCC amd64 CI Workflow",
-      "description": "CI workflow: configure → build → test for GCC",
-      "steps": [
-        { "type": "configure", "name": "gcc_amd64_ci" },
-        { "type": "build", "name": "gcc_amd64_ci" },
-        { "type": "test", "name": "gcc_amd64_ci" }
-      ]
-    },
-    {
-      "name": "clang_amd64_ci",
-      "displayName": "Clang amd64 CI Workflow",
-      "description": "CI workflow: configure → build → test for Clang",
-      "steps": [
-        { "type": "configure", "name": "clang_amd64_ci" },
-        { "type": "build", "name": "clang_amd64_ci" },
-        { "type": "test", "name": "clang_amd64_ci" }
+        {
+          "type": "configure",
+          "name": "clang_amd64"
+        },
+        {
+          "type": "build",
+          "name": "clang_amd64"
+        },
+        {
+          "type": "test",
+          "name": "clang_amd64"
+        },
+        {
+          "type": "package",
+          "name": "clang_amd64_package"
+        }
       ]
     }
   ]
