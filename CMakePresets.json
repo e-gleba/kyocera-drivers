@@ -23,29 +23,6 @@
       }
     },
     {
-      "name": "msvc",
-      "displayName": "Microsoft Visual C++",
-      "description": "MSVC toolchain configuration with Windows-specific optimizations",
-      "inherits": "base",
-      "generator": "Visual Studio 17 2022",
-      "architecture": {
-        "value": "x64",
-        "strategy": "set"
-      },
-      "toolset": {
-        "value": "host=x64",
-        "strategy": "set"
-      },
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "cacheVariables": {
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-      }
-    },
-    {
       "name": "clang",
       "displayName": "LLVM Clang",
       "description": "Clang toolchain configuration with modern C++ standards and optimizations",
@@ -78,12 +55,6 @@
   ],
   "buildPresets": [
     {
-      "name": "msvc",
-      "displayName": "MSVC Build",
-      "configurePreset": "msvc",
-      "configuration": "Release"
-    },
-    {
       "name": "clang",
       "displayName": "Clang Build",
       "configurePreset": "clang",
@@ -98,12 +69,6 @@
   ],
   "packagePresets": [
     {
-      "name": "msvc-package",
-      "displayName": "MSVC Package",
-      "configurePreset": "msvc",
-      "generators": ["ZIP", "NSIS"]
-    },
-    {
       "name": "clang-package",
       "displayName": "Clang Package",
       "configurePreset": "clang",
@@ -117,25 +82,6 @@
     }
   ],
   "workflowPresets": [
-    {
-      "name": "msvc-full",
-      "displayName": "MSVC Complete Pipeline",
-      "description": "Full development workflow using MSVC toolchain",
-      "steps": [
-        {
-          "type": "configure",
-          "name": "msvc"
-        },
-        {
-          "type": "build",
-          "name": "msvc"
-        },
-        {
-          "type": "package",
-          "name": "msvc-package"
-        }
-      ]
-    },
     {
       "name": "clang-full",
       "displayName": "Clang Complete Pipeline",
