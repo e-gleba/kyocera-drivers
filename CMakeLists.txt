@@ -29,7 +29,7 @@ option(DOWNLOAD_PPDS "Download and install Kyocera PPD files" OFF)
 list(APPEND CMAKE_PREFIX_PATH cmake)
 
 if(DOWNLOAD_PPDS)
-    find_package(kyocera_ppd CONFIG REQUIRED)
+    find_package(download_kyocera_ppd CONFIG REQUIRED)
 else()
     add_subdirectory(ppd SYSTEM)
 endif()
