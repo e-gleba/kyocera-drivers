@@ -1,15 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 
-cpack_add_component(
-    proprietary_runtime
-    DISPLAY_NAME "Proprietary Runtime"
-    DESCRIPTION "Kyocera rastertokpsl wrapper and binaries"
-    REQUIRED)
+# WARNING THOSE paths are hardocde for install for correct cups, so if use gnu
+# do with warn
 
 # Install wrapper.sh as rastertokpsl (runtime component)
 install(
     PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/wrapper.sh"
     DESTINATION lib/cups/filter
+    # we need that rename for driver to substicute and think its exe
     RENAME rastertokpsl
     COMPONENT proprietary_runtime
     PERMISSIONS

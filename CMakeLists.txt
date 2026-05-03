@@ -92,6 +92,12 @@ if(PROJECT_IS_TOP_LEVEL)
     include(CPack)
 
     cpack_add_component(
+        proprietary_runtime
+        DISPLAY_NAME "Proprietary Runtime"
+        DESCRIPTION "Kyocera rastertokpsl wrapper and binaries"
+        REQUIRED)
+
+    cpack_add_component(
         documentation
         DISPLAY_NAME "Documentation"
         DESCRIPTION "Project README and documentation"
