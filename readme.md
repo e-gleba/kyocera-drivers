@@ -1,6 +1,7 @@
 # kyocera_drivers
 
 [![CI](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
+[![Release](https://github.com/e-gleba/kyocera-drivers/actions/workflows/release.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/release.yml)
 [![CMake](https://img.shields.io/badge/CMake-%E2%89%A53.31-064F8C?logo=cmake&logoColor=white)](https://cmake.org/cmake/help/latest/release/3.31.html)
 [![License](https://img.shields.io/badge/License-GPL--3.0-33A852?logo=gnu&logoColor=white)](license)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20x86__64-FCC624?logo=linux&logoColor=black)](https://www.kernel.org/)
@@ -17,7 +18,6 @@
 - [Prerequisites](#prerequisites)
 - [Build & Install](#build--install)
 - [Packaging](#packaging)
-- [Installation Components](#installation-components)
 - [Uninstall](#uninstall)
 - [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
@@ -116,18 +116,9 @@ cmake --workflow --preset default
 # packages appear in build/default/
 ```
 
-CI builds packages on every push and PR — see the [Package workflow](.github/workflows/package.yml).
+CI builds packages on every push and PR.
 
----
-
-## Installation Components
-
-| Component | Description | Command |
-|---|---|---|
-| `proprietary_runtime` | filter binaries and wrapper | `cmake --install build/default --component proprietary_runtime` |
-| `ppd` | PPD model files | `cmake --install build/default --component ppd` |
-| `documentation` | README, license, icons | `cmake --install build/default --component documentation` |
-| `development` | CMake package config | `cmake --install build/default --component development` |
+Releases are fully automated: push a tag `v*.*.*` and the [Release workflow](.github/workflows/release.yml) builds packages, generates release notes and attaches `.deb`, `.rpm` and `.tar.gz` as assets.
 
 ---
 
