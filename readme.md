@@ -1,7 +1,7 @@
 # kyocera_drivers
 
 [![CI](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
-[![Release](https://github.com/e-gleba/kyocera-drivers/actions/workflows/release.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/release.yml)
+[![Release](https://img.shields.io/github/v/release/e-gleba/kyocera-drivers)](https://github.com/e-gleba/kyocera-drivers/releases/latest)
 [![CMake](https://img.shields.io/badge/CMake-%E2%89%A53.31-064F8C?logo=cmake&logoColor=white)](https://cmake.org/cmake/help/latest/release/3.31.html)
 [![License](https://img.shields.io/badge/License-GPL--3.0-33A852?logo=gnu&logoColor=white)](license)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20x86__64-FCC624?logo=linux&logoColor=black)](https://www.kernel.org/)
