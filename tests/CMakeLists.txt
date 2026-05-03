@@ -14,12 +14,7 @@ set(TEST_RUNTIME_DIR "$<TARGET_FILE_DIR:test_raster>")
 # raster_chain: PDF -> CUPS raster -> KPSL (direct filter invocation)
 # -----------------------------------------------------------------------------
 add_executable(test_raster test_raster.cxx)
-set_target_properties(test_raster
-    PROPERTIES
-        CXX_STANDARD 26
-        CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS OFF
-)
+target_compile_features(test_raster PRIVATE cxx_std_23)
 
 # Ensure the open-source filter is built before the test binary.
 add_dependencies(test_raster rastertokpsl)
@@ -58,12 +53,7 @@ set_tests_properties(raster_chain
 # filter_chain: Full CUPS pipeline via cupsfilter + PPD
 # -----------------------------------------------------------------------------
 add_executable(test_filter test_filter.cxx)
-set_target_properties(test_filter
-    PROPERTIES
-        CXX_STANDARD 26
-        CXX_STANDARD_REQUIRED ON
-        CXX_EXTENSIONS OFF
-)
+target_compile_features(test_filter PRIVATE cxx_std_23)
 
 add_dependencies(test_filter rastertokpsl)
 

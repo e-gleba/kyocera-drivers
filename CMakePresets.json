@@ -25,7 +25,7 @@
     {
       "name": "gcc_amd64",
       "displayName": "GCC amd64 Linux",
-      "description": "GCC toolchain for Linux x86_64 with C23/C++26 and Release optimizations",
+      "description": "GCC toolchain for Linux x86_64 with C23/C++23 and Release optimizations",
       "inherits": "base",
       "condition": {
         "type": "equals",
@@ -45,7 +45,7 @@
     {
       "name": "clang_amd64",
       "displayName": "Clang amd64 Linux",
-      "description": "Clang toolchain for Linux x86_64 with C23/C++26 and Release optimizations",
+      "description": "Clang toolchain for Linux x86_64 with C23/C++23 and Release optimizations",
       "inherits": "base",
       "condition": {
         "type": "equals",
