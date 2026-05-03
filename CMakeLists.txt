@@ -14,7 +14,13 @@ option(
     "Install official proprietary Kyocera drivers"
     ON
 )
-option(DOWNLOAD_PPDS "Download and install Kyocera PPD files" ON)
+
+# NOTE: Kyocera has transitioned to a universal driver model and no longer
+# provides per-model manual PPD files through the legacy download endpoints.
+# As a result, automated PPD fetching is currently unsupported and disabled
+# by default. Use bundled PPDs in the ppd/ directory or obtain drivers
+# directly from the manufacturer.
+option(DOWNLOAD_PPDS "Download and install Kyocera PPD files" OFF)
 
 list(APPEND CMAKE_PREFIX_PATH cmake)
 
@@ -41,4 +47,3 @@ else()
         add_subdirectory(tests)
     endif()
 endif()
-
