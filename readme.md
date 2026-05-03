@@ -1,7 +1,7 @@
 # Kyocera Reverse‑Engineered `rastertokpsl` — Modern CMake Toolkit
 
 [![CMake](https://img.shields.io/badge/CMake-%E2%89%A53.25-064F8C?logo=cmake&logoColor=white)](https://cmake.org/cmake/help/latest/release/3.25.html)
-[![C++26](https://img.shields.io/badge/C%2B%2B-26-00599C?logo=c%2B%2B&logoColor=white)](https://en.cppreference.com/w/cpp/26)
+[![C++23](https://img.shields.io/badge/C%2B%2B-23-00599C?logo=c%2B%2B&logoColor=white)](https://en.cppreference.com/w/cpp/23)
 [![C23](https://img.shields.io/badge/C-23-A8B9CC?logo=c&logoColor=white)](https://en.cppreference.com/w/c/23)
 [![License](https://img.shields.io/badge/License-GPL--3.0-33A852?logo=gnu&logoColor=white)](./license)
 [![Platform](https://img.shields.io/badge/Platform-Linux%20x86__64-FCC624?logo=linux&logoColor=black)](https://www.kernel.org/)
@@ -33,7 +33,7 @@
 
 This repository delivers a fully open, reverse‑engineered Kyocera filter solution for Linux printing environments. It includes:
 
-- Modern **C++26 / C23** source for `rastertokpsl` (Kyocera raster filter)
+- Modern **C++23 / C23** source for `rastertokpsl` (Kyocera raster filter)
 - Automated **CMake ≥3.25** build and install system with Ninja Multi‑Config generator
 - Bundled PPD files, filter binaries, and installation scripts
 - CMake workflow presets for **GCC** and **Clang** on Linux x86_64
@@ -77,8 +77,8 @@ flowchart LR
 ```mermaid
 flowchart TD
     A[CMake >=3.25<br>Ninja Multi-Config] --> B{Toolchain Preset}
-    B -->|gcc_amd64| C[GCC Compiler<br>C23 / C++26]
-    B -->|clang_amd64| D[Clang / LLVM<br>C23 / C++26]
+    B -->|gcc_amd64| C[GCC Compiler<br>C23 / C++23]
+    B -->|clang_amd64| D[Clang / LLVM<br>C23 / C++23]
     C --> E[Open Source Driver<br>src/]
     D --> E
     E --> F[rastertokpsl binary]
@@ -148,7 +148,7 @@ This driver package provides bundled PPDs and filter support for the following K
 - Fedora, Ubuntu, or any modern Linux distribution with CUPS
 - `cmake` **≥3.25** (≥3.30 recommended for preset support)
 - `ninja` (Ninja Multi‑Config generator)
-- `g++` (C++26) and `gcc` (C23) **or** `clang++` / `clang`
+- `g++` (C++23) and `gcc` (C23) **or** `clang++` / `clang`
 - `libstdc++` and `libstdc++-devel`
 - CUPS development headers
 

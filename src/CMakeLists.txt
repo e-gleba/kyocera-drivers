@@ -8,10 +8,7 @@ add_subdirectory(libjbig SYSTEM)
 
 add_library(halftone STATIC halfton.cxx)
 target_include_directories(halftone PUBLIC ${CMAKE_CURRENT_LIST_DIR})
-set_target_properties(
-    halftone
-    PROPERTIES CXX_STANDARD 26 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
-)
+target_compile_features(halftone PUBLIC cxx_std_23)
 
 add_library(rastertokpsl_core STATIC rastertokpsl.c)
 target_link_libraries(
@@ -19,14 +16,11 @@ target_link_libraries(
     PRIVATE cupsimage cups unicode libjbig halftone
 )
 target_include_directories(rastertokpsl_core PUBLIC ${CMAKE_CURRENT_LIST_DIR})
-set_target_properties(rastertokpsl_core PROPERTIES C_STANDARD 23)
+target_compile_features(rastertokpsl_core PRIVATE c_std_23)
 
 add_executable(rastertokpsl main.cxx)
 target_link_libraries(rastertokpsl PRIVATE rastertokpsl_core)
-set_target_properties(
-    rastertokpsl
-    PROPERTIES CXX_STANDARD 26 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
-)
+target_compile_features(rastertokpsl PRIVATE cxx_std_23)
 
 cpack_add_component(
     runtime
