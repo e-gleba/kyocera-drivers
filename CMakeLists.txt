@@ -83,7 +83,6 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/kyocera_driversConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/kyocera_driversConfigVersion.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kyocera_drivers
-    COMPONENT development
 )
 
 # ------------------------------------------------------------------
@@ -95,24 +94,21 @@ install(
         "${CMAKE_CURRENT_SOURCE_DIR}/license"
         "${CMAKE_CURRENT_SOURCE_DIR}/package/description.txt"
     DESTINATION ${CMAKE_INSTALL_DOCDIR}
-    COMPONENT documentation
     PERMISSIONS OWNER_READ GROUP_READ WORLD_READ
 )
 
 install(
     FILES "${CMAKE_CURRENT_SOURCE_DIR}/package/icon.png"
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pixmaps
-    COMPONENT documentation
 )
 
 install(
     FILES "${CMAKE_CURRENT_SOURCE_DIR}/package/kyocera_drivers.desktop"
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
-    COMPONENT documentation
 )
 
 # ------------------------------------------------------------------
-# CPack — DEB/RPM component packaging
+# CPack — DEB / RPM / TGZ packaging (single package, no components)
 # ------------------------------------------------------------------
 if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
@@ -134,7 +130,6 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
     set(CPACK_RPM_PACKAGE_GROUP "System/Printing")
     set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-    set(CPACK_RPM_COMPONENT_INSTALL ON)
 
     # DEB
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
@@ -144,34 +139,6 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "glebajk@gmail.com")
     set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
     set(CPACK_DEBIAN_PACKAGE_DEPENDS "cups;libc6")
-    set(CPACK_DEB_COMPONENT_INSTALL ON)
 
     include(CPack)
-
-    cpack_add_component(proprietary_runtime
-        DISPLAY_NAME "Proprietary Runtime"
-        DESCRIPTION "Kyocera rastertokpsl wrapper and proprietary binaries"
-        GROUP "Runtime"
-        REQUIRED
-    )
-
-    cpack_add_component(ppd
-        DISPLAY_NAME "PPD Data"
-        DESCRIPTION "Kyocera printer PPD files for CUPS"
-        GROUP "PPD"
-        REQUIRED
-    )
-
-    cpack_add_component(development
-        DISPLAY_NAME "Development"
-        DESCRIPTION "CMake package configuration files"
-        GROUP "Development"
-    )
-
-    cpack_add_component(documentation
-        DISPLAY_NAME "Documentation"
-        DESCRIPTION "README, license, icons and desktop integration files"
-        GROUP "Documentation"
-        REQUIRED
-    )
 endif()

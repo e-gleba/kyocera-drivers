@@ -27,9 +27,23 @@ jobs:
       - name: Workflow
         run: cmake --workflow --preset default
 
-      - name: Upload artifacts
+      - name: Upload DEB
         uses: actions/upload-artifact@v7
         with:
-          name: kyocera-drivers-packages-${{ github.sha }}
-          path: build/default/*
+          name: kyocera-drivers-${{ github.sha }}.deb
+          path: build/default/*.deb
+          if-no-files-found: error
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v7
+        with:
+          name: kyocera-drivers-${{ github.sha }}.rpm
+          path: build/default/*.rpm
+          if-no-files-found: error
+
+      - name: Upload TGZ
+        uses: actions/upload-artifact@v7
+        with:
+          name: kyocera-drivers-${{ github.sha }}.tgz
+          path: build/default/*.tar.gz
           if-no-files-found: error
