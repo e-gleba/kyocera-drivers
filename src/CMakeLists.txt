@@ -10,7 +10,7 @@ add_library(halftone STATIC halfton.cxx)
 target_include_directories(halftone PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 set_target_properties(
     halftone
-    PROPERTIES CXX_STANDARD 23 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
+    PROPERTIES CXX_STANDARD 26 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
 )
 
 add_library(rastertokpsl_core STATIC rastertokpsl.c)
@@ -25,7 +25,7 @@ add_executable(rastertokpsl main.cxx)
 target_link_libraries(rastertokpsl PRIVATE rastertokpsl_core)
 set_target_properties(
     rastertokpsl
-    PROPERTIES CXX_STANDARD 23 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
+    PROPERTIES CXX_STANDARD 26 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO
 )
 
 cpack_add_component(
