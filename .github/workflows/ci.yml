@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_linux:
-    name: Build (Linux ${{ matrix.compiler }})
+  build_and_test_linux:
+    name: Build and Test (Linux ${{ matrix.compiler }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -25,13 +25,19 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcups2-dev ninja-build cmake
+          sudo apt-get install -y libcups2-dev ninja-build cmake cups-filters
 
       - name: Configure (${{ matrix.compiler }})
-        run: cmake --preset ${{ matrix.compiler }}
+        run: |
+          cmake --preset ${{ matrix.compiler }} \
+                -DINSTALL_ORIGINAL_PROPRIETARY_DRIVERS=OFF \
+                -DBUILD_TESTS=ON
 
       - name: Build (${{ matrix.compiler }})
         run: cmake --build --preset ${{ matrix.compiler }}
+
+      - name: Test (${{ matrix.compiler }})
+        run: ctest --preset ${{ matrix.compiler }} --output-on-failure
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
