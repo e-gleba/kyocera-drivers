@@ -12,8 +12,6 @@
 ## table_of_contents
 
 - [overview](#overview)
-- [notice](#notice)
-- [architecture](#architecture)
 - [supported_models](#supported_models)
 - [prerequisites](#prerequisites)
 - [build_and_install](#build_and_install)
@@ -21,6 +19,8 @@
 - [uninstall](#uninstall)
 - [usage](#usage)
 - [troubleshooting](#troubleshooting)
+- [architecture](#architecture)
+- [notice](#notice)
 - [references](#references)
 - [license](#license)
 
@@ -40,50 +40,6 @@
 - `ppd/English/` — bundled legacy PPD files
 - `kyocera_drivers.desktop` — desktop integration entry
 - `CMakePresets.json` — preset definitions for GCC and Clang
-
----
-
-## notice
-
-Kyocera Document Solutions Inc. has transitioned to a universal driver model and cloud-centric print solutions. Legacy per-model PPD download endpoints are no longer maintained.
-
-| evidence | source |
-|---|---|
-| Kyocera models supporting universal print | [KYOCERA — Universal Print](https://www.kyoceradocumentsolutions.com/support/universal_print/) |
-| Global download portal (consolidated packages) | [KYOCERA Global Download](https://global.kyocera.com/support/download/) |
-| Legacy PPD archive (OpenPrinting) | [OpenPrinting — Kyocera PPD Archive](https://www.openprinting.org/download/PPD/Kyocera/en/) |
-
-Because upstream no longer maintains legacy download infrastructure, automated PPD fetching is disabled by default (`DOWNLOAD_PPDS=OFF`). The default build path uses the bundled `ppd/English/` directory.
-
----
-
-## architecture
-
-### cups_filter_pipeline
-
-```mermaid
-flowchart LR
-    A[Application<br>PDF / PS / Image] -->|stdin / file| B[CUPS Scheduler<br>cupsd]
-    B --> C[pdftops / imagetoraster<br>CUPS built-in filter]
-    C --> D[rastertokpsl<br>Kyocera KPSL filter]
-    D -->|KPSL byte stream| E[USB / TCP / LPD<br>Printer backend]
-    E --> F[Kyocera Printer<br>FS-1020MFP / FS-1040 / ...]
-```
-
-### build_system_architecture
-
-```mermaid
-flowchart TD
-    A[CMake >=3.25<br>Ninja Multi-Config] --> B{Toolchain Preset}
-    B -->|gcc_amd64| C[GCC]
-    B -->|clang_amd64| D[Clang / LLVM]
-    C --> E[Install Targets]
-    D --> E
-    E --> F[lib/cups/filter/rastertokpsl<br>wrapper.sh]
-    E --> G[lib/cups/filter/rastertokpsl_amd64]
-    E --> H[lib/cups/filter/rastertokpsl_x86]
-    E --> I[share/cups/model/Kyocera/English/*.ppd]
-```
 
 ---
 
@@ -208,6 +164,50 @@ After installation, CUPS recognizes the bundled Kyocera PPDs. Add a printer via 
 | verbose build output | Append `--verbose` to the build command. |
 | filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS-level diagnostics. |
 | incorrect page size or orientation | Ensure the selected PPD matches your exact printer model. |
+
+---
+
+## architecture
+
+### cups_filter_pipeline
+
+```mermaid
+flowchart LR
+    A[Application<br>PDF / PS / Image] -->|stdin / file| B[CUPS Scheduler<br>cupsd]
+    B --> C[pdftops / imagetoraster<br>CUPS built-in filter]
+    C --> D[rastertokpsl<br>Kyocera KPSL filter]
+    D -->|KPSL byte stream| E[USB / TCP / LPD<br>Printer backend]
+    E --> F[Kyocera Printer<br>FS-1020MFP / FS-1040 / ...]
+```
+
+### build_system_architecture
+
+```mermaid
+flowchart TD
+    A[CMake >=3.25<br>Ninja Multi-Config] --> B{Toolchain Preset}
+    B -->|gcc_amd64| C[GCC]
+    B -->|clang_amd64| D[Clang / LLVM]
+    C --> E[Install Targets]
+    D --> E
+    E --> F[lib/cups/filter/rastertokpsl<br>wrapper.sh]
+    E --> G[lib/cups/filter/rastertokpsl_amd64]
+    E --> H[lib/cups/filter/rastertokpsl_x86]
+    E --> I[share/cups/model/Kyocera/English/*.ppd]
+```
+
+---
+
+## notice
+
+Kyocera Document Solutions Inc. has transitioned to a universal driver model and cloud-centric print solutions. Legacy per-model PPD download endpoints are no longer maintained.
+
+| evidence | source |
+|---|---|
+| Kyocera models supporting universal print | [KYOCERA — Universal Print](https://www.kyoceradocumentsolutions.com/support/universal_print/) |
+| Global download portal (consolidated packages) | [KYOCERA Global Download](https://global.kyocera.com/support/download/) |
+| Legacy PPD archive (OpenPrinting) | [OpenPrinting — Kyocera PPD Archive](https://www.openprinting.org/download/PPD/Kyocera/en/) |
+
+Because upstream no longer maintains legacy download infrastructure, automated PPD fetching is disabled by default (`DOWNLOAD_PPDS=OFF`). The default build path uses the bundled `ppd/English/` directory.
 
 ---
 
