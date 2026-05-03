@@ -65,9 +65,8 @@
     {
       "name": "gcc_amd64_ci",
       "displayName": "GCC amd64 CI",
-      "description": "CI-only preset: open-source driver + tests enabled",
+      "description": "CI preset: open-source driver + tests enabled",
       "inherits": "gcc_amd64",
-      "hidden": true,
       "cacheVariables": {
         "INSTALL_ORIGINAL_PROPRIETARY_DRIVERS": "OFF",
         "BUILD_TESTS": "ON"
@@ -76,9 +75,8 @@
     {
       "name": "clang_amd64_ci",
       "displayName": "Clang amd64 CI",
-      "description": "CI-only preset: open-source driver + tests enabled",
+      "description": "CI preset: open-source driver + tests enabled",
       "inherits": "clang_amd64",
-      "hidden": true,
       "cacheVariables": {
         "INSTALL_ORIGINAL_PROPRIETARY_DRIVERS": "OFF",
         "BUILD_TESTS": "ON"
