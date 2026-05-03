@@ -1,0 +1,31 @@
+name: Package
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build rpm
+          pip install "cmake>=3.31"
+
+      - name: Workflow
+        run: cmake --workflow --preset default
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kyocera-drivers-packages-${{ github.sha }}
+          path: build/default/*
+          if-no-files-found: error
