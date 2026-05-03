@@ -67,6 +67,28 @@
       "configuration": "Release"
     }
   ],
+  "testPresets": [
+    {
+      "name": "clang",
+      "displayName": "Clang Tests",
+      "configurePreset": "clang",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "default"
+      }
+    },
+    {
+      "name": "gcc",
+      "displayName": "GCC Tests",
+      "configurePreset": "gcc",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "default"
+      }
+    }
+  ],
   "packagePresets": [
     {
       "name": "clang-package",
@@ -96,6 +118,10 @@
           "name": "clang"
         },
         {
+          "type": "test",
+          "name": "clang"
+        },
+        {
           "type": "package",
           "name": "clang-package"
         }
@@ -112,6 +138,10 @@
         },
         {
           "type": "build",
+          "name": "gcc"
+        },
+        {
+          "type": "test",
           "name": "gcc"
         },
         {

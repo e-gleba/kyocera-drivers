@@ -8,7 +8,7 @@ project(
     LANGUAGES C CXX
 )
 
-option(BUILD_TESTS "Enable building of test suite" OFF)
+option(BUILD_TESTS "Enable building of test suite" ON)
 option(
     INSTALL_ORIGINAL_PROPRIETARY_DRIVERS
     "Install official proprietary Kyocera drivers"
@@ -41,9 +41,11 @@ if(INSTALL_ORIGINAL_PROPRIETARY_DRIVERS)
     add_subdirectory(proprietary SYSTEM)
 else()
     add_subdirectory(src)
+endif()
 
-    if(BUILD_TESTS)
-        include(CTest)
-        add_subdirectory(tests)
-    endif()
+# Integration tests require the open-source rastertokpsl target built from src/.
+# They are skipped automatically when the proprietary driver path is selected.
+if(BUILD_TESTS AND NOT INSTALL_ORIGINAL_PROPRIETARY_DRIVERS)
+    include(CTest)
+    add_subdirectory(tests)
 endif()
