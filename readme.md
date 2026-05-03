@@ -15,8 +15,9 @@
 
 - [Overview](#overview)
 - [Important Notice — Kyocera Driver Model Transition](#important-notice--kyocera-driver-model-transition)
+- [Architecture](#architecture)
+- [Open Source vs Proprietary Driver](#open-source-vs-proprietary-driver)
 - [Supported Models](#supported-models)
-- [Known Limitations](#known-limitations)
 - [Prerequisites](#prerequisites)
 - [Build & Install](#build--install)
 - [Installation Components](#installation-components)
@@ -56,6 +57,76 @@ Because upstream no longer maintains the legacy download infrastructure, this pr
 
 ---
 
+## Architecture
+
+### CUPS Filter Pipeline
+
+The diagram below shows how a print job flows through CUPS and reaches the Kyocera printer via this driver.
+
+```mermaid
+flowchart LR
+    A[Application<br>PDF / PS / Image] -->|stdin / file| B[CUPS Scheduler<br>cupsd]
+    B --> C[pdftops / imagetoraster<br>CUPS built-in filter]
+    C --> D[rastertokpsl<br>Kyocera KPSL filter]
+    D -->|KPSL byte stream| E[USB / TCP / LPD<br>Printer backend]
+    E --> F[Kyocera Printer<br>FS-1020MFP / FS-1040 / ...]
+```
+
+### Build System Architecture
+
+```mermaid
+flowchart TD
+    A[CMake ≥3.25<br>Ninja Multi-Config] --> B{Toolchain Preset}
+    B -->|gcc| C[GCC Compiler<br>C23 / C++23]
+    B -->|clang| D[Clang / LLVM<br>C23 / C++23]
+    B -->|msvc| E[MSVC<br>Windows only]
+    C --> F[Open Source Driver<br>src/]
+    D --> F
+    F --> G[rastertokpsl binary]
+    G --> H[ppd/ bundled PPDs]
+    I[Proprietary Binaries<br>proprietary/] --> J[kyocera_ppd-config<br>DOWNLOAD_PPDS=OFF]
+    J --> H
+    K[INSTALL_ORIGINAL_PROPRIETARY_DRIVERS=ON] --> I
+```
+
+---
+
+## Open Source vs Proprietary Driver
+
+> **Recommendation:** By default the project installs the **proprietary bundled driver** (`INSTALL_ORIGINAL_PROPRIETARY_DRIVERS=ON`). The open-source reverse-engineered build is provided for transparency, research, and environments that cannot ship proprietary binaries, but it is **functionally inferior** to the manufacturer reference.
+
+| Feature | Proprietary Bundled | Open Source (`src/`) |
+|---|---|---|
+| Page orientation (portrait ↔ landscape) | **Full support** | Partial — may print incorrectly |
+| Paper size auto-detection | **Supported** | Limited / manual selection required |
+| All page formats (A4, A5, Letter, Legal, etc.) | **Supported** | Not all formats validated |
+| Halftone / dithering accuracy | Reference quality | Reverse-engineered approximation |
+| CUPS argument order | Corrected wrapper | Original order may misroute options |
+| License | Proprietary binary (shipped) | GPL-3.0 (rebuildable) |
+| Auditability / Reproducibility | Opaque | Full source available |
+
+### When to use the open-source driver
+
+- You are auditing, fuzzing, or contributing to a clean-room implementation.
+- Your distribution policy prohibits shipping proprietary blobs.
+- You have validated the output against your exact model and page setup.
+
+### When to use the proprietary bundled driver
+
+- **Default choice for daily printing.** It is the only configuration tested against all supported models and page formats.
+- You need reliable portrait / landscape switching.
+- You require maximum halftone fidelity on GDI-based Kyocera devices.
+
+To explicitly opt into the open-source build:
+
+```bash
+cmake --preset gcc -DINSTALL_ORIGINAL_PROPRIETARY_DRIVERS=OFF
+cmake --build --preset gcc
+sudo cmake --install build/gcc --prefix /usr
+```
+
+---
+
 ## Supported Models
 
 This driver package provides bundled PPDs and filter support for the following Kyocera printers:
@@ -70,13 +141,6 @@ This driver package provides bundled PPDs and filter support for the following K
 | Kyocera FS‑1125MFP | GDI |
 
 **Field‑tested:** Kyocera FS‑1020MFP.
-
----
-
-## Known Limitations
-
-- **Page orientation changes** (vertical ↔ horizontal) may produce incorrect output.
-- The current driver argument order does not match the proprietary reference. For full feature parity, enable `INSTALL_ORIGINAL_PROPRIETARY_DRIVERS` to install a corrected proprietary build.
 
 ---
 
@@ -194,6 +258,8 @@ Run `--help` for argument details.
 | Missing dependencies during configure | Install `cups-devel` (Fedora) or `libcups2-dev` (Ubuntu) and verify CMake is on PATH. |
 | Verbose build logs needed | Append `--verbose` to the build command: `cmake --build . --verbose` |
 | Filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS‑level diagnostics. |
+| Landscape prints as portrait (or vice versa) | You are using the open-source driver. Re-install with the proprietary bundled driver enabled (default). |
+| Page cuts off or wrong paper size detected | Ensure the PPD matches your model. If the issue persists, switch to the proprietary driver. |
 
 ---
 
