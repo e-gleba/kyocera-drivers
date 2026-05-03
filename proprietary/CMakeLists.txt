@@ -1,48 +1,38 @@
-cmake_minimum_required(VERSION 3.16)
+# Configure wrapper so it knows the real install prefix at runtime
+set(KYOCERA_CUPS_FILTER_PREFIX "${CMAKE_INSTALL_PREFIX}/${KYOCERA_CUPS_FILTER_DIR}")
 
-# WARNING THOSE paths are hardocde for install for correct cups, so if use gnu
-# do with warn
+configure_file(
+    "${CMAKE_CURRENT_LIST_DIR}/wrapper.sh.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/rastertokpsl"
+    @ONLY
+)
 
-# Install wrapper.sh as rastertokpsl (runtime component)
 install(
-    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/wrapper.sh"
-    DESTINATION lib/cups/filter
-    # we need that rename for driver to substicute and think its exe
-    RENAME rastertokpsl
+    PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/rastertokpsl"
+    DESTINATION "${KYOCERA_CUPS_FILTER_DIR}"
     COMPONENT proprietary_runtime
     PERMISSIONS
-        OWNER_READ
-        OWNER_WRITE
-        OWNER_EXECUTE
-        GROUP_READ
-        GROUP_EXECUTE
-        WORLD_READ
-        WORLD_EXECUTE)
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ GROUP_EXECUTE
+        WORLD_READ WORLD_EXECUTE
+)
 
-# Install rastertokpsl-x32 binary (runtime component)
 install(
     PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl_x86"
-    DESTINATION lib/cups/filter
+    DESTINATION "${KYOCERA_CUPS_FILTER_DIR}"
     COMPONENT proprietary_runtime
     PERMISSIONS
-        OWNER_READ
-        OWNER_WRITE
-        OWNER_EXECUTE
-        GROUP_READ
-        GROUP_EXECUTE
-        WORLD_READ
-        WORLD_EXECUTE)
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ GROUP_EXECUTE
+        WORLD_READ WORLD_EXECUTE
+)
 
-# Install rastertokpsl-x64 binary (runtime component)
 install(
     PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/rastertokpsl_amd64"
-    DESTINATION lib/cups/filter
+    DESTINATION "${KYOCERA_CUPS_FILTER_DIR}"
     COMPONENT proprietary_runtime
     PERMISSIONS
-        OWNER_READ
-        OWNER_WRITE
-        OWNER_EXECUTE
-        GROUP_READ
-        GROUP_EXECUTE
-        WORLD_READ
-        WORLD_EXECUTE)
+        OWNER_READ OWNER_WRITE OWNER_EXECUTE
+        GROUP_READ GROUP_EXECUTE
+        WORLD_READ WORLD_EXECUTE
+)

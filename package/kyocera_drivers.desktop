@@ -2,8 +2,8 @@
 Type=Application
 Name=Kyocera Raster Filter
 GenericName=Kyocera Print Filter
-Comment=High-performance Kyocera rastertokpsl print filter for CUPS. Supports Kyocera GDI printers on Linux. Fast, reliable, and secure.
-Exec=rastertokpsl %F
+Comment=High-performance Kyocera rastertokpsl print filter for CUPS. Supports Kyocera GDI printers on Linux.
+Exec=xdg-open https://github.com/e-gleba/kyocera-drivers
 Icon=icon
 Terminal=false
 Categories=Utility;Printing;System;
@@ -14,9 +14,8 @@ Actions=About;Help;
 
 [Desktop Action About]
 Name=About Kyocera Raster Filter
-Exec=xdg-open https://yourdocs.example.com/kyocera
+Exec=xdg-open https://github.com/e-gleba/kyocera-drivers
 
 [Desktop Action Help]
 Name=Get Help
-Exec=xdg-open https://yourdocs.example.com/kyocera/help
-
+Exec=xdg-open https://github.com/e-gleba/kyocera-drivers/issues

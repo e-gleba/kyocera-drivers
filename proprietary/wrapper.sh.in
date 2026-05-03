@@ -23,4 +23,4 @@ i386 | i486 | i586 | i686)
   ;;
 esac
 
-exec "/usr/lib/cups/filter/$bin" "$input_file" "$user" "$job_name" "$copies" "$options"
+exec "@KYOCERA_CUPS_FILTER_PREFIX@/$bin" "$input_file" "$user" "$job_name" "$copies" "$options"
