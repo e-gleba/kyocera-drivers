@@ -1,6 +1,7 @@
 name: Package
 
 on:
+  workflow_call:
   push:
     branches: [master]
   pull_request:
@@ -30,20 +31,20 @@ jobs:
       - name: Upload DEB
         uses: actions/upload-artifact@v7
         with:
-          name: kyocera-drivers-${{ github.sha }}.deb
+          name: kyocera-drivers-deb
           path: build/default/*.deb
           if-no-files-found: error
 
       - name: Upload RPM
         uses: actions/upload-artifact@v7
         with:
-          name: kyocera-drivers-${{ github.sha }}.rpm
+          name: kyocera-drivers-rpm
           path: build/default/*.rpm
           if-no-files-found: error
 
       - name: Upload TGZ
         uses: actions/upload-artifact@v7
         with:
-          name: kyocera-drivers-${{ github.sha }}.tgz
+          name: kyocera-drivers-tgz
           path: build/default/*.tar.gz
           if-no-files-found: error
