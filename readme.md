@@ -9,30 +9,30 @@
 
 ---
 
-## table_of_contents
+## Table of Contents
 
-- [overview](#overview)
-- [supported_models](#supported_models)
-- [prerequisites](#prerequisites)
-- [build_and_install](#build_and_install)
-- [installation_components](#installation_components)
-- [uninstall](#uninstall)
-- [usage](#usage)
-- [troubleshooting](#troubleshooting)
-- [architecture](#architecture)
-- [notice](#notice)
-- [references](#references)
-- [license](#license)
+- [Overview](#overview)
+- [Supported Models](#supported-models)
+- [Prerequisites](#prerequisites)
+- [Build & Install](#build--install)
+- [Installation Components](#installation-components)
+- [Uninstall](#uninstall)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Architecture](#architecture)
+- [Notice](#notice)
+- [References](#references)
+- [License](#license)
 
 ---
 
-## overview
+## Overview
 
 `kyocera_drivers` bundles proprietary Kyocera `rastertokpsl` filter binaries and legacy PPD files into a modern CMake install system for Linux CUPS environments.
 
-**note:** the previous open-source reverse-engineered implementation (`src/`) has been removed from this repository. This branch now serves exclusively as an installer and packaging layer for the manufacturer-provided binaries.
+**Note:** the previous open-source reverse-engineered implementation (`src/`) has been removed from this repository. This branch now serves exclusively as an installer and packaging layer for the manufacturer-provided binaries.
 
-**repository contents:**
+**Repository contents:**
 
 - `proprietary/rastertokpsl_amd64` — x86_64 filter binary
 - `proprietary/rastertokpsl_x86` — x86 filter binary
@@ -43,11 +43,11 @@
 
 ---
 
-## supported_models
+## Supported Models
 
 Bundled PPD files support the following Kyocera printers:
 
-| model | type |
+| Model | Type |
 |---|---|
 | FS-1020MFP | GDI |
 | FS-1025MFP | GDI |
@@ -56,14 +56,14 @@ Bundled PPD files support the following Kyocera printers:
 | FS-1120MFP | GDI |
 | FS-1125MFP | GDI |
 
-**field tested:** FS-1020MFP
+**Field tested:** FS-1020MFP
 
 ---
 
-## prerequisites
+## Prerequisites
 
 - Linux x86_64 distribution with CUPS
-- `cmake` >=3.25
+- `cmake` >= 3.25
 - `ninja`
 - `gcc` / `g++` or `clang` / `clang++`
 - CUPS development headers
@@ -78,16 +78,16 @@ sudo apt install libcups2-dev cmake ninja-build gcc g++
 
 ---
 
-## build_and_install
+## Build & Install
 
-### clone
+### Clone
 
 ```bash
 git clone https://github.com/e-gleba/kyocera-drivers.git
 cd kyocera-drivers
 ```
 
-### configure
+### Configure
 
 ```bash
 # GCC (recommended)
@@ -97,7 +97,7 @@ cmake --preset gcc_amd64
 cmake --preset clang_amd64
 ```
 
-### build
+### Build
 
 ```bash
 cmake --build --preset gcc_amd64
@@ -105,7 +105,7 @@ cmake --build --preset gcc_amd64
 cmake --build --preset clang_amd64
 ```
 
-### install
+### Install
 
 ```bash
 sudo cmake --install build/gcc_amd64 --prefix /usr
@@ -120,19 +120,19 @@ sudo cmake --install build/gcc_amd64 --prefix /usr
 
 ---
 
-## installation_components
+## Installation Components
 
 CMake install components are available for selective deployment:
 
-| component | description | command |
+| Component | Description | Command |
 |---|---|---|
-| proprietary_runtime | filter binaries and wrapper | `cmake --install build/gcc_amd64 --component proprietary_runtime` |
+| `proprietary_runtime` | filter binaries and wrapper | `cmake --install build/gcc_amd64 --component proprietary_runtime` |
 
 PPD files install with the default (unspecified) component.
 
 ---
 
-## uninstall
+## Uninstall
 
 CMake tracks installed files in `install_manifest.txt`.
 
@@ -149,27 +149,27 @@ sudo cmake --build . --target uninstall
 
 ---
 
-## usage
+## Usage
 
 After installation, CUPS recognizes the bundled Kyocera PPDs. Add a printer via the CUPS web UI (`http://localhost:631`) or `lpadmin`, selecting the installed Kyocera driver.
 
 ---
 
-## troubleshooting
+## Troubleshooting
 
-| symptom | resolution |
+| Symptom | Resolution |
 |---|---|
-| permission errors during install | Run with `sudo`. Ensure `/usr/share/cups/model/Kyocera` and `/usr/lib/cups/filter` are writable by root. |
-| missing dependencies during configure | Install `cups-devel` (Fedora) or `libcups2-dev` (Ubuntu). Verify `cmake` and `ninja` are on `PATH`. |
-| verbose build output | Append `--verbose` to the build command. |
-| filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS-level diagnostics. |
-| incorrect page size or orientation | Ensure the selected PPD matches your exact printer model. |
+| Permission errors during install | Run with `sudo`. Ensure `/usr/share/cups/model/Kyocera` and `/usr/lib/cups/filter` are writable by root. |
+| Missing dependencies during configure | Install `cups-devel` (Fedora) or `libcups2-dev` (Ubuntu). Verify `cmake` and `ninja` are on `PATH`. |
+| Verbose build output | Append `--verbose` to the build command. |
+| Filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS-level diagnostics. |
+| Incorrect page size or orientation | Ensure the selected PPD matches your exact printer model. |
 
 ---
 
-## architecture
+## Architecture
 
-### cups_filter_pipeline
+### CUPS Filter Pipeline
 
 ```mermaid
 flowchart LR
@@ -180,7 +180,7 @@ flowchart LR
     E --> F[Kyocera Printer<br>FS-1020MFP / FS-1040 / ...]
 ```
 
-### build_system_architecture
+### Build System Architecture
 
 ```mermaid
 flowchart TD
@@ -197,11 +197,11 @@ flowchart TD
 
 ---
 
-## notice
+## Notice
 
 Kyocera Document Solutions Inc. has transitioned to a universal driver model and cloud-centric print solutions. Legacy per-model PPD download endpoints are no longer maintained.
 
-| evidence | source |
+| Evidence | Source |
 |---|---|
 | Kyocera models supporting universal print | [KYOCERA — Universal Print](https://www.kyoceradocumentsolutions.com/support/universal_print/) |
 | Global download portal (consolidated packages) | [KYOCERA Global Download](https://global.kyocera.com/support/download/) |
@@ -211,7 +211,7 @@ Because upstream no longer maintains legacy download infrastructure, automated P
 
 ---
 
-## references
+## References
 
 - [CMake — Installing and Testing](https://cmake.org/cmake/help/latest/guide/tutorial/Installing%20and%20Testing.html)
 - [SDB: Using Your Own Filters to Print with CUPS](https://en.opensuse.org/SDB:Using_Your_Own_Filters_to_Print_with_CUPS)
@@ -221,6 +221,6 @@ Because upstream no longer maintains legacy download infrastructure, automated P
 
 ---
 
-## license
+## License
 
 This project is licensed under the GNU General Public License v3.0. See [license](license) for the full text.
