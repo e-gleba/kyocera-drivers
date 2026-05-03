@@ -18,6 +18,9 @@ if(clang_format_exe)
         "${PROJECT_SOURCE_DIR}/tests/*.h"
     )
 
+    # Exclude third-party / system subdirectories that are not part of this project.
+    list(FILTER clang_format_sources EXCLUDE REGEX "(libjbig|unicode|proprietary)")
+
     add_custom_target(
         clang_format
         COMMAND "${clang_format_exe}" -i ${clang_format_sources}

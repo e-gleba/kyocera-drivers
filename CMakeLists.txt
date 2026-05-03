@@ -8,6 +8,10 @@ project(
     LANGUAGES C CXX
 )
 
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    message(FATAL_ERROR "This project supports Linux x86_64 only. Detected: ${CMAKE_SYSTEM_NAME}")
+endif()
+
 option(BUILD_TESTS "Enable building of test suite" ON)
 option(
     INSTALL_ORIGINAL_PROPRIETARY_DRIVERS

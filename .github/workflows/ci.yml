@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   push:
@@ -11,60 +11,64 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build_and_test_linux:
-    name: Build and Test (Linux ${{ matrix.compiler }})
+  build_and_test:
+    name: build and test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        compiler: [gcc, clang]
+        preset: [gcc_amd64_ci, clang_amd64_ci]
     steps:
-      - name: Checkout repository
+      - id: checkout_repo
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - id: install_deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcups2-dev ninja-build cmake cups-filters
+          sudo apt-get install -y \
+            cmake ninja-build \
+            gcc g++ \
+            clang clang-tidy clang-format \
+            libcups2-dev cups-filters \
+            python3-pip
+          pip3 install cpplint
 
-      - name: Configure (${{ matrix.compiler }})
-        run: |
-          cmake --preset ${{ matrix.compiler }} \
-                -DINSTALL_ORIGINAL_PROPRIETARY_DRIVERS=OFF \
-                -DBUILD_TESTS=ON
+      - id: build_and_test
+        run: cmake --workflow --preset ${{ matrix.preset }}
 
-      - name: Build (${{ matrix.compiler }})
-        run: cmake --build --preset ${{ matrix.compiler }}
-
-      - name: Test (${{ matrix.compiler }})
-        run: ctest --preset ${{ matrix.compiler }} --output-on-failure
-
-      - name: Upload build artifacts
+      - id: upload_artifacts
+        if: failure() || success()
         uses: actions/upload-artifact@v4
         with:
-          name: build_${{ matrix.compiler }}
-          path: build/${{ matrix.compiler }}/
+          name: ${{ matrix.preset }}
+          path: build/${{ matrix.preset }}/
 
   lint_and_format:
-    name: Lint and Format
+    name: lint and format
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - id: checkout_repo
         uses: actions/checkout@v4
 
-      - name: Install tools
+      - id: install_tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-format clang-tidy cmake ninja-build libcups2-dev
+          sudo apt-get install -y \
+            cmake ninja-build \
+            gcc g++ \
+            clang clang-tidy clang-format \
+            libcups2-dev cups-filters \
+            python3-pip
+          pip3 install cpplint
 
-      - name: Configure (GCC for compile_commands.json)
-        run: |
-          cmake --preset gcc \
-                -DINSTALL_ORIGINAL_PROPRIETARY_DRIVERS=OFF \
-                -DBUILD_TESTS=ON
+      - id: configure_gcc
+        run: cmake --preset gcc_amd64_ci
 
-      - name: Check formatting
-        run: cmake --build build/gcc --target clang_format_check
+      - id: clang_format_check
+        run: cmake --build build/gcc_amd64_ci --target clang_format_check
 
-      - name: Run static analysis
-        run: cmake --build build/gcc --target clang_tidy
+      - id: clang_tidy
+        run: cmake --build build/gcc_amd64_ci --target clang_tidy
+
+      - id: cpplint
+        run: cmake --build build/gcc_amd64_ci --target cpplint

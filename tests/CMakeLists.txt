@@ -16,7 +16,7 @@ set(TEST_RUNTIME_DIR "$<TARGET_FILE_DIR:test_raster>")
 add_executable(test_raster test_raster.cxx)
 set_target_properties(test_raster
     PROPERTIES
-        CXX_STANDARD 23
+        CXX_STANDARD 26
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS OFF
 )
@@ -60,7 +60,7 @@ set_tests_properties(raster_chain
 add_executable(test_filter test_filter.cxx)
 set_target_properties(test_filter
     PROPERTIES
-        CXX_STANDARD 23
+        CXX_STANDARD 26
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS OFF
 )
