@@ -15,6 +15,9 @@ on:
 jobs:
   package:
     uses: ./.github/workflows/package.yml
+    permissions:
+      contents: read
+      actions: write
 
   release:
     needs: package
