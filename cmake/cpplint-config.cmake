@@ -6,12 +6,27 @@ find_program(
 )
 
 if(cpplint_exe)
+    file(
+        GLOB_RECURSE
+        cpplint_sources
+        CONFIGURE_DEPENDS
+        "${PROJECT_SOURCE_DIR}/src/*.cxx"
+        "${PROJECT_SOURCE_DIR}/src/*.c"
+        "${PROJECT_SOURCE_DIR}/src/*.h"
+        "${PROJECT_SOURCE_DIR}/tests/*.cxx"
+        "${PROJECT_SOURCE_DIR}/tests/*.c"
+        "${PROJECT_SOURCE_DIR}/tests/*.h"
+    )
+
+    # Exclude third-party / system subdirectories.
+    list(FILTER cpplint_sources EXCLUDE REGEX "(libjbig|unicode|proprietary)")
+
     add_custom_target(
         cpplint
-        COMMAND "${cpplint_exe}" --recursive "${PROJECT_SOURCE_DIR}"
+        COMMAND "${cpplint_exe}" ${cpplint_sources}
         WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
         VERBATIM
-        COMMENT "running cpplint (google C++ style checker) on all sources"
+        COMMENT "running cpplint (Google C++ style checker) on project sources"
         USES_TERMINAL
     )
 else()

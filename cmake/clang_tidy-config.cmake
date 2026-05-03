@@ -6,14 +6,28 @@ find_program(
 )
 
 if(clang_tidy_exe)
+    file(
+        GLOB_RECURSE
+        clang_tidy_sources
+        CONFIGURE_DEPENDS
+        "${PROJECT_SOURCE_DIR}/src/*.cxx"
+        "${PROJECT_SOURCE_DIR}/src/*.c"
+        "${PROJECT_SOURCE_DIR}/tests/*.cxx"
+        "${PROJECT_SOURCE_DIR}/tests/*.c"
+    )
+
+    # Exclude third-party / system subdirectories that are not part of this project.
+    list(FILTER clang_tidy_sources EXCLUDE REGEX "(libjbig|unicode|proprietary)")
+
     add_custom_target(
         clang_tidy
         COMMAND
-            "${clang_tidy_exe}" "${PROJECT_SOURCE_DIR}/**/*.{cpp,cxx,hpp,hxx}"
-            -- -std=c++20
+            "${clang_tidy_exe}"
+            -p "${CMAKE_BINARY_DIR}"
+            ${clang_tidy_sources}
         WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
         VERBATIM
-        COMMENT "running clang-tidy (static analysis and lint) on all sources"
+        COMMENT "running clang-tidy (static analysis and lint) on project sources"
         USES_TERMINAL
     )
 else()
