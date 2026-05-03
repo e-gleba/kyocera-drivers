@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_linux:
+    name: Build and Test (Linux ${{ matrix.compiler }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcups2-dev ninja-build cmake
+
+      - name: Configure (${{ matrix.compiler }})
+        run: cmake --preset ${{ matrix.compiler }}
+
+      - name: Build (${{ matrix.compiler }})
+        run: cmake --build --preset ${{ matrix.compiler }}
+
+      - name: Test (${{ matrix.compiler }})
+        run: ctest --preset ${{ matrix.compiler }} --output-on-failure
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build_${{ matrix.compiler }}
+          path: build/${{ matrix.compiler }}/
+
+  format_check:
+    name: Format and Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format clang-tidy cmake
+
+      - name: Run clang-format check
+        run: |
+          find src -name '*.cxx' -o -name '*.c' -o -name '*.h' | \
+            xargs clang-format --dry-run --Werror
+        continue-on-error: true
+
+      - name: Run clang-tidy check
+        run: |
+          cmake --preset gcc
+          cmake --build build/gcc --target clang-tidy-check
+        continue-on-error: true
