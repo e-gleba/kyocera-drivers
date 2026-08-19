@@ -130,6 +130,12 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
     set(CPACK_RPM_PACKAGE_GROUP "System/Printing")
     set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
+    # The bundled binaries are scanned on the Debian-based CI runner, which
+    # records Debian-style SONAME requires (libcups.so.2) that rpm distros
+    # (ALT, Fedora, SUSE) cannot satisfy. Ship self-contained binaries and
+    # declare the single real runtime dependency manually instead.
+    set(CPACK_RPM_PACKAGE_AUTOREQPROV "no")
+    set(CPACK_RPM_PACKAGE_REQUIRES "cups")
 
     # DEB
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
@@ -138,7 +144,7 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "glebajk@gmail.com")
     set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "cups;libc6")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "cups, libc6")
 
     include(CPack)
 endif()
