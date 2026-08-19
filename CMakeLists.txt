@@ -127,31 +127,33 @@ if(PROJECT_IS_TOP_LEVEL)
     set(CPACK_RESOURCE_FILE_README  "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
     set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/readme.md")
 
+    # ------------------------------------------------------------------
     # RPM
+    # ------------------------------------------------------------------
     set(CPACK_RPM_PACKAGE_DESCRIPTION
         "High-performance Kyocera raster-to-KPSL conversion toolkit. See README.md for details."
     )
     set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
     set(CPACK_RPM_PACKAGE_GROUP "System/Printing")
     set(CPACK_RPM_PACKAGE_ARCHITECTURE "x86_64")
-    # The bundled binaries are scanned on the Debian-based CI runner, which
-    # records Debian-style SONAME requires (libcups.so.2) that rpm distros
-    # (ALT, Fedora, SUSE) cannot satisfy. Ship self-contained binaries and
-    # declare the single real runtime dependency manually instead.
+
+    # Self-contained package: disable auto-dependency scanning so build-host
+    # SONAMEs (e.g. Debian's libcups.so.2) never leak into Requires, and
+    # declare the single real runtime dependency manually.
     set(CPACK_RPM_PACKAGE_AUTOREQPROV "no")
     set(CPACK_RPM_PACKAGE_REQUIRES "cups")
-    # ALT Linux runs brp-alt/verify-elf on every packaged ELF and fails the
-    # build: the bundled rastertokpsl_x86 is a 32-bit proprietary binary
-    # whose libcups dependencies cannot resolve inside an x86_64 buildroot.
-    # Skip ELF verification for these foreign prebuilt blobs (same approach
-    # as ALT's own llvm packaging). The macro exists only on ALT; other
-    # rpmbuilds reject it as an unknown spec tag, so inject it only when
-    # the build host is ALT.
+
+    # ALT Linux build hosts run verify-elf on every packaged binary and fail
+    # on the bundled 32-bit proprietary filter. Skip ELF verification; the
+    # macro is ALT-only, so inject it only when building on ALT.
+    # https://www.altlinux.org/Brp
     if(EXISTS "/etc/altlinux-release")
         set(CPACK_RPM_SPEC_MORE_DEFINE "%set_verify_elf_method skip")
     endif()
 
+    # ------------------------------------------------------------------
     # DEB
+    # ------------------------------------------------------------------
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
         "High-performance Kyocera raster-to-KPSL conversion toolkit. See README.md for details."
     )
