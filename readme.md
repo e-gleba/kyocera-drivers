@@ -3,11 +3,12 @@
 [![Package](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
 [![Release](https://img.shields.io/github/v/release/e-gleba/kyocera-drivers)](https://github.com/e-gleba/kyocera-drivers/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-blue)](https://github.com/e-gleba/kyocera-drivers)
+[![Field tested](https://img.shields.io/badge/field%20tested-FS--1020MFP-brightgreen)](https://github.com/e-gleba/kyocera-drivers)
 [![▶ Run Package](https://img.shields.io/badge/▶_Run-Package-2088FF?logo=github-actions&logoColor=white)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
 
 Proprietary Kyocera `rastertokpsl` filter and legacy PPDs, packaged for modern Linux CUPS. No compiled code — CMake/CPack packaging only. Linux x86_64.
 
-**Supported:** FS-1020MFP · FS-1025MFP · FS-1040 · FS-1060DN · FS-1120MFP · FS-1125MFP (GDI). Field tested on FS-1020MFP.
+**Supported:** FS-1020MFP · FS-1025MFP · FS-1040 · FS-1060DN · FS-1120MFP · FS-1125MFP (GDI).
 
 ---
 
