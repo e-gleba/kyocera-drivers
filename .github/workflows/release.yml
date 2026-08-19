@@ -126,6 +126,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TAG: ${{ needs.resolve.outputs.tag }}
       CMAKE_VERSION: ${{ needs.resolve.outputs.cmake_version }}
+      BASE: ${{ github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -160,10 +161,10 @@ jobs:
           git add CMakeLists.txt
           git commit -m "chore: bump CMake project version to ${CMAKE_VERSION}"
           git push -u origin "HEAD:${branch}"
-          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          sha=$(git rev-parse HEAD)
 
           pr_url=$(gh pr create \
-            --base "${{ github.ref_name }}" \
+            --base "${BASE}" \
             --head "${branch}" \
             --title "chore: bump CMake project version to ${CMAKE_VERSION}" \
             --body "$(cat <<EOF
@@ -178,11 +179,15 @@ jobs:
           echo "Opened ${pr_url}" >> "${GITHUB_STEP_SUMMARY}"
 
           if gh pr merge --squash --delete-branch; then
-            echo "Merged ${pr_url}" >> "${GITHUB_STEP_SUMMARY}"
+            git fetch origin "${BASE}"
+            sha=$(git rev-parse "origin/${BASE}")
+            echo "Merged ${pr_url} → ${sha}" >> "${GITHUB_STEP_SUMMARY}"
           else
-            echo "::warning::could not merge ${pr_url} — merge it manually"
+            echo "::warning::could not merge ${pr_url} — packaging the PR branch"
             echo "Merge blocked — merge ${pr_url} manually" >> "${GITHUB_STEP_SUMMARY}"
           fi
+
+          echo "sha=${sha}" >> "${GITHUB_OUTPUT}"
 
   package:
     name: package
