@@ -1,16 +1,11 @@
-# Configure wrapper so it knows the real install prefix at runtime
-set(KYOCERA_CUPS_FILTER_PREFIX "${CMAKE_INSTALL_PREFIX}/${KYOCERA_CUPS_FILTER_DIR}")
-
-configure_file(
-    "${CMAKE_CURRENT_LIST_DIR}/wrapper.sh.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/rastertokpsl"
-    @ONLY
-)
-
+# Install the wrapper as `rastertokpsl`. It resolves the real filter binary
+# relative to its own location at runtime, so no prefix is baked in and
+# `cmake --install --prefix ...` overrides work correctly.
 install(
-    PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/rastertokpsl"
+    PROGRAMS "${CMAKE_CURRENT_LIST_DIR}/wrapper.sh"
     DESTINATION "${KYOCERA_CUPS_FILTER_DIR}"
     COMPONENT proprietary_runtime
+    RENAME rastertokpsl
     PERMISSIONS
         OWNER_READ OWNER_WRITE OWNER_EXECUTE
         GROUP_READ GROUP_EXECUTE
