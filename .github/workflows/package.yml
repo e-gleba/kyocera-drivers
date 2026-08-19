@@ -1,7 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Package
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        description: Git ref or SHA to package (defaults to the caller SHA)
+        type: string
+        required: false
+        default: ""
   push:
     branches: [master]
   pull_request:
@@ -18,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
 
       - name: Install dependencies
         run: |
