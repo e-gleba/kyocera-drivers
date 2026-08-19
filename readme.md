@@ -1,14 +1,20 @@
+<div align="center">
+
 # kyocera_drivers
 
 [![Package](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml/badge.svg)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
 [![Release](https://img.shields.io/github/v/release/e-gleba/kyocera-drivers)](https://github.com/e-gleba/kyocera-drivers/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Linux%20x86__64-blue)](https://github.com/e-gleba/kyocera-drivers)
 [![Field tested](https://img.shields.io/badge/field%20tested-FS--1020MFP-brightgreen)](https://github.com/e-gleba/kyocera-drivers)
+
 [![▶ Run Package](https://img.shields.io/badge/▶_Run-Package-2088FF?logo=github-actions&logoColor=white)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/package.yml)
+[![▶ Run Release](https://img.shields.io/badge/▶_Run-Release-2088FF?logo=github-actions&logoColor=white)](https://github.com/e-gleba/kyocera-drivers/actions/workflows/release.yml)
 
 Proprietary Kyocera `rastertokpsl` filter and legacy PPDs, packaged for modern Linux CUPS. No compiled code — CMake/CPack packaging only. Linux x86_64.
 
 **Supported:** FS-1020MFP · FS-1025MFP · FS-1040 · FS-1060DN · FS-1120MFP · FS-1125MFP (GDI).
+
+</div>
 
 ---
 
@@ -139,6 +145,10 @@ Kyocera has moved to a universal driver and cloud print model and no longer main
 
 ---
 
+<div align="center">
+
 [CMake Presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html) · [CPack](https://cmake.org/cmake/help/latest/module/CPack.html) · [SDB: Custom CUPS Filters](https://en.opensuse.org/SDB:Using_Your_Own_Filters_to_Print_with_CUPS) · [rastertokpsl-re](https://github.com/Fe-Ti/rastertokpsl-re)
 
 GPL-3.0 — see [license](license).
+
+</div>
