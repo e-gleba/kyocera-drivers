@@ -144,8 +144,12 @@ if(PROJECT_IS_TOP_LEVEL)
     # build: the bundled rastertokpsl_x86 is a 32-bit proprietary binary
     # whose libcups dependencies cannot resolve inside an x86_64 buildroot.
     # Skip ELF verification for these foreign prebuilt blobs (same approach
-    # as ALT's own llvm packaging).
-    set(CPACK_RPM_SPEC_MORE_DEFINE "%set_verify_elf_method skip")
+    # as ALT's own llvm packaging). The macro exists only on ALT; other
+    # rpmbuilds reject it as an unknown spec tag, so inject it only when
+    # the build host is ALT.
+    if(EXISTS "/etc/altlinux-release")
+        set(CPACK_RPM_SPEC_MORE_DEFINE "%set_verify_elf_method skip")
+    endif()
 
     # DEB
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
