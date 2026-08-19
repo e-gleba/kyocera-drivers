@@ -15,8 +15,10 @@
 
 - [Overview](#overview)
 - [Supported Models](#supported-models)
-- [Prerequisites](#prerequisites)
-- [Build & Install](#build--install)
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+- [CMake Presets](#cmake-presets)
+- [Install](#install)
 - [Packaging](#packaging)
 - [Uninstall](#uninstall)
 - [Usage](#usage)
@@ -30,16 +32,18 @@
 
 ## Overview
 
-`kyocera_drivers` bundles proprietary Kyocera `rastertokpsl` filter binaries and legacy PPD files into a modern CMake install system for Linux CUPS environments.
+`kyocera_drivers` bundles the proprietary Kyocera `rastertokpsl` filter binaries and legacy PPD files into a modern CMake install system for Linux CUPS environments.
 
-This project contains **no compiled code**. It is a pure packaging layer:
+This project contains **no compiled code** — it is a pure packaging layer:
 
-- `proprietary/rastertokpsl_amd64` — x86_64 filter binary
-- `proprietary/rastertokpsl_x86` — x86 filter binary
-- `proprietary/wrapper.sh.in` — architecture-aware wrapper (configured at build time, installed as `rastertokpsl`)
-- `ppd/English/` — bundled legacy PPD files
-- `package/kyocera_drivers.desktop` — desktop integration entry
-- `CMakePresets.json` — single `default` preset with packaging workflow
+| Path | Description |
+|---|---|
+| `proprietary/rastertokpsl_amd64` | x86_64 filter binary |
+| `proprietary/rastertokpsl_x86` | x86 filter binary |
+| `proprietary/wrapper.sh.in` | Architecture-aware wrapper, configured at build time and installed as `rastertokpsl` |
+| `ppd/English/` | Bundled legacy PPD files |
+| `package/` | Desktop entry, icon and CPack metadata |
+| `CMakePresets.json` | Single `default` preset chain: configure → build → package |
 
 ---
 
@@ -60,80 +64,113 @@ Bundled PPD files support the following Kyocera printers:
 
 ---
 
-## Prerequisites
+## Requirements
 
-- Linux x86_64 distribution with CUPS
-- `cmake` >= 3.31
-- `ninja`
-- CUPS (for runtime)
+- Linux x86_64 with CUPS
+- CMake ≥ 3.31 (preset schema version 9)
+- Ninja
 
 ```bash
 # Fedora
 sudo dnf install cmake ninja-build cups
 
-# Ubuntu / Debian
+# Debian / Ubuntu
 sudo apt install cmake ninja-build cups
 ```
 
 ---
 
-## Build & Install
-
-### Clone
+## Quick Start
 
 ```bash
 git clone https://github.com/e-gleba/kyocera-drivers.git
 cd kyocera-drivers
+
+cmake --workflow --preset default             # configure → build → package
+sudo cmake --install build/default --prefix /usr
 ```
 
-### Configure & Build
+---
 
-```bash
-cmake --preset default
-cmake --build --preset default
-```
+## CMake Presets
 
-### Install
+All operations are driven by a single `default` preset defined in [`CMakePresets.json`](CMakePresets.json). Run `cmake --list-presets` to discover what's available.
+
+| Preset | Type | Command | Description |
+|---|---|---|---|
+| `default` | configure | `cmake --preset default` | Ninja generator, `Release`, build dir `build/default/` |
+| `default` | build | `cmake --build --preset default` | No compilation — stages filters and PPDs |
+| `default` | package | `cpack --preset default` | Generates DEB, RPM and TGZ into `build/default/` |
+| `default` | workflow | `cmake --workflow --preset default` | configure → build → package in one shot |
+
+---
+
+## Install
 
 ```bash
 sudo cmake --install build/default --prefix /usr
 ```
 
-Or as a single workflow:
+Install layout (relative to prefix):
 
-```bash
-cmake --workflow --preset default
-```
+| Destination | Contents |
+|---|---|
+| `lib/cups/filter/` | `rastertokpsl` wrapper plus `rastertokpsl_amd64` / `rastertokpsl_x86` |
+| `share/cups/model/Kyocera/English/` | PPD files |
+| `share/doc/kyocera_drivers/` | readme, license, package description |
+| `share/applications/`, `share/pixmaps/` | desktop entry, icon |
+| `lib/cmake/kyocera_drivers/` | package config — enables `find_package(kyocera_drivers CONFIG REQUIRED)` |
 
 ---
 
 ## Packaging
 
-DEB, RPM and TGZ packages are generated automatically via CPack:
+Packages are produced by the `default` package preset (CPack generators: DEB, RPM, TGZ):
 
 ```bash
-cmake --workflow --preset default
-# packages appear in build/default/
+cpack --preset default
+# artifacts land in build/default/
 ```
 
-CI builds packages on every push and PR.
+Install the resulting package:
 
-Releases are fully automated: push a tag `v*.*.*` and the [Release workflow](.github/workflows/release.yml) builds packages, generates release notes and attaches `.deb`, `.rpm` and `.tar.gz` as assets.
+```bash
+# Debian / Ubuntu
+sudo dpkg -i build/default/kyocera_drivers-*-Linux.deb
+
+# Fedora / ALT Linux / other RPM-based distros
+sudo rpm -i build/default/kyocera_drivers-*-Linux.rpm
+```
+
+CI builds packages on every push and PR. Releases are fully automated: push a tag `v*.*.*` and the [release workflow](.github/workflows/release.yml) builds packages, generates release notes and attaches `.deb`, `.rpm` and `.tar.gz` assets.
 
 ---
 
 ## Uninstall
+
+If installed via `cmake --install`:
 
 ```bash
 cd build/default
 sudo xargs rm -f < install_manifest.txt
 ```
 
+If installed from a package:
+
+```bash
+sudo dpkg -r kyocera_drivers   # DEB
+sudo rpm -e kyocera_drivers    # RPM
+```
+
 ---
 
 ## Usage
 
-After installation, CUPS recognizes the bundled Kyocera PPDs. Add a printer via the CUPS web UI (`http://localhost:631`) or `lpadmin`, selecting the installed Kyocera driver.
+Restart CUPS after installation, then add the printer via the web UI (`http://localhost:631`) or `lpadmin`, selecting the installed Kyocera PPD:
+
+```bash
+sudo systemctl restart cups
+```
 
 ---
 
@@ -141,40 +178,37 @@ After installation, CUPS recognizes the bundled Kyocera PPDs. Add a printer via 
 
 | Symptom | Resolution |
 |---|---|
-| Permission errors during install | Run with `sudo`. Ensure `/usr/share/cups/model/Kyocera` and `/usr/lib/cups/filter` are writable by root. |
-| Missing dependencies during configure | Verify `cmake` and `ninja` are on `PATH`. |
-| Filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS-level diagnostics. |
-| Incorrect page size or orientation | Ensure the selected PPD matches your exact printer model. |
+| Permission errors during install | Run with `sudo`; ensure `/usr/share/cups/model/Kyocera` and `/usr/lib/cups/filter` are writable by root |
+| Preset errors on configure | Preset schema version 9 requires CMake ≥ 3.31 — check `cmake --version` |
+| Missing tools during configure | Verify `cmake` and `ninja` are on `PATH` |
+| Filter runtime errors | Inspect `/var/log/cups/error_log` for CUPS-level diagnostics |
+| Wrong page size or orientation | Selected PPD must match the exact printer model |
 
 ---
 
 ## Architecture
 
-### CUPS Filter Pipeline
+### CUPS filter pipeline
 
 ```mermaid
 flowchart LR
     A[Application<br>PDF / PS / Image] -->|stdin / file| B[CUPS Scheduler<br>cupsd]
-    B --> C[pdftops / imagetoraster<br>CUPS built-in filter]
+    B --> C[pdftops / imagetoraster<br>CUPS built-in filters]
     C --> D[rastertokpsl<br>Kyocera KPSL filter]
-    D -->|KPSL byte stream| E[USB / TCP / LPD<br>Printer backend]
+    D -->|KPSL byte stream| E[USB / TCP / LPD<br>backend]
     E --> F[Kyocera Printer<br>FS-1020MFP / FS-1040 / ...]
 ```
 
-### Build System
+### Build system
 
 ```mermaid
 flowchart TD
-    A[CMake >=3.31<br>Ninja] --> B[Configure]
-    B --> C[Build]
-    C --> D[Install Targets]
-    D --> E[lib/cups/filter/rastertokpsl]
-    D --> F[lib/cups/filter/rastertokpsl_amd64]
-    D --> G[lib/cups/filter/rastertokpsl_x86]
-    D --> H[share/cups/model/Kyocera/English/*.ppd]
-    D --> I[share/doc/kyocera_drivers/]
-    D --> J[share/applications/]
-    C --> K[CPack<br>DEB / RPM / TGZ]
+    A[cmake --preset default<br>configure] --> B[cmake --build --preset default<br>build]
+    B --> C[cpack --preset default<br>DEB / RPM / TGZ]
+    B --> D[cmake --install build/default]
+    D --> E[lib/cups/filter/rastertokpsl*]
+    D --> F[share/cups/model/Kyocera/English/*.ppd]
+    D --> G[share/doc · share/applications · lib/cmake]
 ```
 
 ---
@@ -195,10 +229,9 @@ Because upstream no longer maintains legacy download infrastructure, automated P
 
 ## References
 
+- [CMake — Presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html)
 - [CMake — Installing and Testing](https://cmake.org/cmake/help/latest/guide/tutorial/Installing%20and%20Testing.html)
 - [SDB: Using Your Own Filters to Print with CUPS](https://en.opensuse.org/SDB:Using_Your_Own_Filters_to_Print_with_CUPS)
-- [KYOCERA — Models Supporting Universal Print](https://www.kyoceradocumentsolutions.com/support/universal_print/)
-- [KYOCERA Global Download & Support Portal](https://global.kyocera.com/support/download/)
 - [OpenPrinting — Kyocera PPD Archive](https://www.openprinting.org/download/PPD/Kyocera/en/)
 
 ---
