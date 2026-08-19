@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31 FATAL_ERROR)
 
 project(
     kyocera_drivers
-    VERSION 1.1.3
+    VERSION 1.1.4
     DESCRIPTION "High-performance Kyocera raster-to-KPSL conversion toolkit"
     HOMEPAGE_URL "https://github.com/e-gleba/kyocera-drivers"
     LANGUAGES NONE
