@@ -8,6 +8,10 @@ project(
     LANGUAGES NONE
 )
 
+# GNUInstallDirs requires an enabled language to derive the target
+# architecture for its libdir heuristic. A throwaway C language is enabled
+# solely to keep that detection working; nothing is compiled.
+enable_language(C)
 include(GNUInstallDirs)
 
 # ------------------------------------------------------------------
@@ -136,6 +140,12 @@ if(PROJECT_IS_TOP_LEVEL)
     # declare the single real runtime dependency manually instead.
     set(CPACK_RPM_PACKAGE_AUTOREQPROV "no")
     set(CPACK_RPM_PACKAGE_REQUIRES "cups")
+    # ALT Linux runs brp-alt/verify-elf on every packaged ELF and fails the
+    # build: the bundled rastertokpsl_x86 is a 32-bit proprietary binary
+    # whose libcups dependencies cannot resolve inside an x86_64 buildroot.
+    # Skip ELF verification for these foreign prebuilt blobs (same approach
+    # as ALT's own llvm packaging).
+    set(CPACK_RPM_SPEC_MORE_DEFINE "%set_verify_elf_method skip")
 
     # DEB
     set(CPACK_DEBIAN_PACKAGE_DESCRIPTION
