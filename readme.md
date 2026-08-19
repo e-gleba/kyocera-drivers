@@ -186,6 +186,70 @@ sudo systemctl restart cups
 
 ---
 
+## Known Upstream Problems
+
+The issues below live in the external printing stack (Kyocera's proprietary binary, CUPS defaults, libcupsfilters) — **not** in this packaging layer. Each entry has a minimal reproducer so you can check whether you are affected before opening an issue here.
+
+Before anything else, enable debug logging and watch a job's full lifecycle — the log names the exact filter that fails:
+
+```bash
+sudo cupsctl --debug-logging && sudo systemctl restart cups
+sudo tail -F /var/log/cups/error_log | grep --line-buffered -E '\[Job'
+```
+
+### 1. Printer hangs mid-job until power cycle — proprietary filter crashes on non-ASCII job titles
+
+Kyocera's `rastertokpsl` binary aborts (SIGABRT/SIGSEGV) when the job title or username contains non-ASCII characters (e.g. Cyrillic on `ru_RU.UTF-8` systems). The printer receives a partial KPSL stream and waits in "Processing" forever — only a power cycle recovers it. Windows is unaffected (different driver codebase).
+
+```bash
+# reproduce
+lp -d <queue> -t "тест" /usr/share/cups/data/testprint
+
+# check
+sudo grep -E 'crashed|signal' /var/log/cups/error_log
+# → "rastertokpsl) crashed on signal 11" or "stopped with status 1"
+```
+
+**Fix:** replace the proprietary filter with the reverse-engineered open-source [rastertokpsl-re](https://github.com/Fe-Ti/rastertokpsl-re) (packaged in ALT Linux Sisyphus as `rastertokpsl-re`; installs over `/usr/lib/cups/filter/rastertokpsl`).
+
+> [!NOTE]
+> The bundled `wrapper.sh` sanitizes the job title, but `[[:alnum:]]` also matches Cyrillic letters in UTF-8 locales — full protection requires forcing `LC_ALL=C` in the wrapper. The crash itself is in Kyocera's binary, not the wrapper.
+
+References: [rastertokpsl-re](https://github.com/Fe-Ti/rastertokpsl-re) · [OpenPrinting/cups#966](https://github.com/OpenPrinting/cups/issues/966) · [Arch forums — FS-1061DN filter crash](https://bbs.archlinux.org/viewtopic.php?id=272961)
+
+### 2. Queue shows "stopped" after any failed job — CUPS default error policy
+
+CUPS ships with the `stop-printer` error policy: one failed filter halts the entire queue and every later job piles up behind it.
+
+```bash
+# check
+lpstat -p <queue>     # printer shows as stopped/disabled
+
+# fix
+sudo lpadmin -p <queue> -o printer-error-policy=abort-job
+```
+
+Reference: [Arch Wiki — CUPS/Troubleshooting](https://wiki.archlinux.org/title/CUPS/Troubleshooting)
+
+### 3. Every job fails with "Unexpected page count" — libcupsfilters 2.2.1 pdfio regression
+
+libcupsfilters 2.2.1 replaced qpdf with pdfio; the new page-count code in `cfFilterGhostscript` misreads its own intermediate PDF (`Missing Root object`) and aborts **every** job — PDF, PostScript, and test pages alike — before any data reaches the printer. Affects all `*cupsFilter`-based drivers, not just Kyocera. Fixed upstream by [PR #167](https://github.com/OpenPrinting/libcupsfilters/pull/167).
+
+```bash
+# reproduce
+lp -d <queue> any.pdf
+
+# check
+sudo grep -E 'Missing Root object|Unexpected page count' /var/log/cups/error_log
+rpm -q libcupsfilters    # affected: 2.2.1 with pdfio 1.6.4; 2.1.1 with qpdf is fine
+```
+
+**Fix:** update libcupsfilters to a build containing the PR #167 fix, or downgrade to 2.1.1.
+
+Reference: [OpenPrinting/libcupsfilters#209](https://github.com/OpenPrinting/libcupsfilters/issues/209)
+
+---
+
 ## Architecture
 
 ### CUPS Filter Pipeline
