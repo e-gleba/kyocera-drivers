@@ -28,12 +28,8 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.sha }}
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build rpm
-          pip install "cmake>=3.31"
-
+      # No apt-get update: the ubuntu-latest image already ships cmake,
+      # ninja and rpmbuild, and the Azure mirror hangs for minutes.
       - name: Workflow
         run: cmake --workflow --preset default
 
