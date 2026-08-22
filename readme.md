@@ -33,7 +33,7 @@ From source — requires `cmake` ≥ 3.31, `ninja`, `cups`:
 git clone https://github.com/e-gleba/kyocera-drivers.git
 cd kyocera-drivers
 cmake --preset default -DCMAKE_INSTALL_PREFIX=/usr
-sudo cmake --install build/default
+sudo cmake --install build/default --prefix=/usr
 ```
 
 Either way, finish with:
